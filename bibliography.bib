@@ -154,3 +154,95 @@ author = "Amal Khalil and Juergen Dingel",
 keywords = "Model-driven engineering, Symbolic execution, Incremental verification, State-based behavioral models, State machines, Memoization, Dependency analysis, Model-based analysis",
 abstract = "Model-driven engineering (MDE) is an iterative and incremental software development process. Supporting the analysis and the verification of software systems developed following the MDE paradigm requires to adopt incrementality when carrying out these crucial tasks in a more optimized way. Communicating state machines are one of the various formalisms used in MDE tools to model and describe the behavior of distributed, concurrent, and real-time reactive systems (e.g., automotive and avionics systems). Modeling the overall behavior of such systems is carried out in a modular way and on different levels of abstraction (i.e., it starts with modeling the behavior of the individual objects in the system first then modeling the interaction between these objects). Similarly, analyzing and verifying the correctness of the developed models to ensure their quality and their integrity is performed on two main levels. The intralevel is used to analyze the correctness of the individual models in isolation of the others, while the interlevel is used to analyze the overall interoperability of those that are communicating with each other. One way to facilitate the analysis of the overall behavior of a system of communicating state machines is to build the global state space (also known as the global reachability tree) of the system. This process is very expensive and in some cases it may suffer from the state explosion problem. Symbolic execution is a technique that can be used to construct an abstract and a bounded version of the system global state space that is known as a symbolic execution tree (SET), yet the size of the generated trees can be very large especially with big and complex systems that are composed of multiple objects. As the system evolves, one way to avoid regenerating the entire SET and repeating any SET-based analyses that have been already conducted is to utilize the previous SET and its analysis results in optimizing the process of generating the SET of the system after the change. In this chapter, we propose two optimization techniques to direct the successive runs of the symbolic execution technique toward the impacted parts of an evolving state machine model using memoization (MSE) and dependency analysis (DSE), respectively. The evaluation results of both techniques showed significant reduction in some cases compared with the standard symbolic execution technique."
 }
+
+% Special case of dynamic symbolic execution technique
+% But I'm not sure if it can be consider a Symbolic execution techniques or if it just enhanced it
+@article{CHEN2018118,
+title = "A systematic review of fuzzing techniques",
+journal = "Computers and Security",
+volume = "75",
+pages = "118 - 137",
+year = "2018",
+issn = "0167-4048",
+doi = "https://doi.org/10.1016/j.cose.2018.02.002",
+url = "http://www.sciencedirect.com/science/article/pii/S0167404818300658",
+pdfUrl = "https://ac.els-cdn.com/S0167404818300658/1-s2.0-S0167404818300658-main.pdf?_tid=2882780d-dae9-4518-bde4-2aeb128d2b4f&acdnat=1538392161_75be7588cae51a09c2f11e86d9872fc8",
+author = "Chen Chen and Baojiang Cui and Jinxin Ma and Runpu Wu and Jianchao Guo and Wenqian Liu",
+keywords = "Software bug, Vulnerability, Fuzzing, Dynamic symbolic execution, Coverage guide, Grammar representation, Scheduling algorithms, Taint analysis, Static analysis",
+abstract = "Fuzzing is an effective and widely used technique for finding security bugs and vulnerabilities in software. It inputs irregular test data into a target program to try to trigger a vulnerable condition in the program execution. Since the first random fuzzing system was constructed, fuzzing efficiency has been greatly improved by combination with several useful techniques, including dynamic symbolic execution, coverage guide, grammar representation, scheduling algorithms, dynamic taint analysis, static analysis and machine learning. In this paper, we will systematically review these techniques and their corresponding representative fuzzing systems. By introducing the principles, advantages and disadvantages of these techniques, we hope to provide researchers with a systematic and deeper understanding of fuzzing techniques and provide some references for this field."
+}
+
+% Little bit old, but looks lik a good base for "forward symbolic execution"
+@INPROCEEDINGS{forwardSymbolicExecution, 
+author={E. J. Schwartz and T. Avgerinos and D. Brumley}, 
+booktitle={2010 IEEE Symposium on Security and Privacy}, 
+title={All You Ever Wanted to Know about Dynamic Taint Analysis and Forward Symbolic Execution (but Might Have Been Afraid to Ask)}, 
+year={2010}, 
+volume={}, 
+number={}, 
+pages={317-331}, 
+pdfUrl = "https://users.ece.cmu.edu/~aavgerin/papers/Oakland10.pdf",
+abstract={Dynamic taint analysis and forward symbolic execution are quickly becoming staple techniques in security analyses. Example applications of dynamic taint analysis and forward symbolic execution include malware analysis, input filter generation, test case generation, and vulnerability discovery. Despite the widespread usage of these two techniques, there has been little effort to formally define the algorithms and summarize the critical issues that arise when these techniques are used in typical security contexts. The contributions of this paper are two-fold. First, we precisely describe the algorithms for dynamic taint analysis and forward symbolic execution as extensions to the run-time semantics of a general language. Second, we highlight important implementation choices, common pitfalls, and considerations when using these techniques in a security context.}, 
+keywords={data analysis;security of data;dynamic taint analysis;forward symbolic execution;security analysis;malware analysis;input filter generation;test case generation;vulnerability discovery;security context;Filters;Runtime;Information analysis;Testing;Computerized monitoring;Performance analysis;Information security;Reactive power;Privacy;Heuristic algorithms;taint analysis;symbolic execution;dynamic analysis}, 
+doi={10.1109/SP.2010.26}, 
+ISSN={2375-1207}, 
+month={May}
+}
+
+% TRACER tool presentation
+@InProceedings{InfeasiblePathsEliminationWithSymbolicExecTechniques,
+author="Aissat, Romain
+and Voisin, Frédéric
+and Wolff, Burkhart",
+editor="Blanchette, Jasmin Christian
+and Merz, Stephan",
+title="Infeasible Paths Elimination by Symbolic Execution Techniques",
+booktitle="Interactive Theorem Proving",
+year="2016",
+publisher="Springer International Publishing",
+address="Cham",
+pages="36--51",
+urlPdf="https://link.springer.com/content/pdf/10.1007%2F978-3-319-43144-4.pdf",
+abstract="TRACER [8] is a tool for verifying safety properties of sequential C programs. TRACER attempts at building a finite symbolic execution graph which over-approximates the set of all concrete reachable states and the set of feasible paths.",
+isbn="978-3-319-43144-4"
+}
+
+% Maybe a bit old, but looks promising; using the "Undefined Behaviors" technique
+@inproceedings{Sharma:2014:EUB:2591062.2594450,
+ author = {Sharma, Asankhaya},
+ title = {Exploiting Undefined Behaviors for Efficient Symbolic Execution},
+ booktitle = {Companion Proceedings of the 36th International Conference on Software Engineering},
+ series = {ICSE Companion 2014},
+ year = {2014},
+ isbn = {978-1-4503-2768-8},
+ location = {Hyderabad, India},
+ pages = {727--729},
+ numpages = {3},
+ url = {http://doi.acm.org/10.1145/2591062.2594450},
+ pdfUrl = "http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.708.1773&rep=rep1&type=pdf",
+ doi = {10.1145/2591062.2594450},
+ acmid = {2594450},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {Symbolic execution, compiler optimizations, undefined behaviors},
+}
+
+% Use of symbolic execution to detect a special case of bug (Buffer overflow)
+@Article{Dudina2017,
+author="Dudina, I. A.
+and Belevantsev, A. A.",
+title="Using static symbolic execution to detect buffer overflows",
+journal="Programming and Computer Software",
+year="2017",
+month="Sep",
+day="01",
+volume="43",
+number="5",
+pages="277--288",
+pdfUrl="https://link.springer.com/content/pdf/10.1134%2FS0361768817050024.pdf",
+abstract="Buffer overrun remains one of the main sources of errors and vulnerabilities in the C/C++ source code. To detect such kind of defects, static analysis is widely used. In this paper, we propose a path-sensitive static analysis based on symbolic execution with state merging. For buffers with compile-time-known sizes, we present an interprocedural path- and context-sensitive overrun detection algorithm that finds program points satisfying a proposed error definition. The described approach was implemented in the Svace static analyzer without significant loss of performance. On Android 5.0.2, these detectors generated 351 warnings, 64{\%} of which were true positives. In addition, we describe a prototype of an intraprocedural heap buffer overflow detector and present an example of a defect found by this detector.",
+issn="1608-3261",
+doi="10.1134/S0361768817050024",
+url="https://doi.org/10.1134/S0361768817050024"
+}
+
