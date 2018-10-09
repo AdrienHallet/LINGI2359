@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{cite}
-\usepackage{graphicx}	
+\usepackage{graphicx}
 \graphicspath{{img/}}
 
 
@@ -21,11 +21,11 @@
       The first occurences of symbolic execution described the then-new method as a middle ground~\cite{newapproach} between the two most-used method of its time. On one hand, program testing (\emph{e.g.: unit testing}) can not always detect a fault in a program and producing a correct test sample and proving that it indeed is correct is not that easy. On the other hand, program proving can indeed ensure that a program is correct from its entry point to the result but it heavily relys on the proof definitions by the programmer and the formal definition of the problem.\\
       Nowadays, symbolic execution is both described as (part of) the core of many modern techniques to software testing\cite{chopper:icse18} and an effective way to create tests suites with extensive coverage.\cite{threedecadeslater}
     \subsection{The concept}
-      The idea behind symbolic execution is to test an algorithm with \emph{symbolic values} rather than concrete values. So instead of using unit testing where a variable is set to a (usually random) value, the symbolic execution maintains a formula that contains all the possible values for the code to reach a particular point in the program. This formula is updated every time the program reaches a branching point. In figure~\ref{fig:symbolicsimple}, we show an example from~\ref{Visser:2004:TIG:1007512.1007526}  of a symbolic execution. Notice how it produces constraints over the variables to explore the algorithm's branching tree.	      % TODO: Adrien <= I'm working on this to warm up :)
-      \begin{figure}	
-        \includegraphics[width=0.5\textwidth]{symbolicsimple}	
-        \caption{Swapping two integers and its symbolic execution tree}	
-        \label{fig:symbolicsimple}	
+      The idea behind symbolic execution is to test an algorithm with \emph{symbolic values} rather than concrete values. So instead of using unit testing where a variable is set to a (usually random) value, the symbolic execution maintains a formula that contains all the possible values for the code to reach a particular point in the program. This formula is updated every time the program reaches a branching point. In figure~\ref{fig:symbolicsimple}, we show an example from~\ref{visserWillemCorina} of a symbolic execution. Notice how it produces constraints over the variables to explore the algorithm's branching tree.
+      \begin{figure}
+        \includegraphics[width=0.5\textwidth]{symbolicsimple}
+        \caption{Swapping two integers and its symbolic execution tree}
+        \label{fig:symbolicsimple}
       \end{figure}
     % What is symbolic execution and why do we do this survey
 
@@ -35,43 +35,48 @@
   \section{Methods}
     % Begin with anything general to say (if any) then detail methods, could also be useful to compare them (if possible) and/or to say when/why a particular method is being used instead of another.
     % Maybe divide the general techniques and optimisations we can apply to all of them ?
-    
+
+    \subsection{Useful concepts}
+      Algorithms can be modeled as graphs where nodes are basic blocks (\emph{i.e.: a part, one or multiple instructions with a single entry and exit point}) and edges are the branches (issued from conditional statements). Def-use pairs use the same concept, although they base their graph on the \emph{definition} and \emph{usage} of a variable. With the \emph{branches} and \emph{def-use pairs}, we can model an algorithm's behavior to follow the values of its variables and determine the \emph{execution path}.
+    \subsection{Basis}
+      Symbolic execution works on those concepts by updating an internal list of symbols. The execution generates a new symbol for each introduced variable in an algorithm\cite{newapproach}. The symbolic execution runs over the algorithm's statements and builds the symbolic values when it encounters a branching point. The symbolically executed algorithm creates a \emph{state}\cite{visserWillemCorina} containing the symbolics values, a counter identifying the next line to be executed and a \emph{path condition}. This path condition is a simple boolean formula over the symbols, it creates a constraint for the algorithm to reach the current state of the program. The path condition allows to recreate the execution up to its state. The states are stored in a \emph{symbolic execution tree} with the states as nodes and the transitions as edges (see figure~\ref{fig:symbolicsimple}).
+
     \subsection{Concolic execution}
     \label{subsec:concolicExecution}
     	The name "concolic" is a portmanteau of the words "concrete" and "symbolic", the idea of this testing method is to mix symbolic execution alongside concrete ones.\\
-    	
+
     	\begin{figure}
     		\centering
-    		\includegraphics[width=0.34\columnwidth]{concrete-abstract.eps}  
+    		\includegraphics[width=0.34\columnwidth]{concrete-abstract.eps}
 			\caption{Concrete and abstract execution machine models}
 			\label{fig:concrete-symbolic}
     	\end{figure}
-    	
+
     	\subsubsection*{Concolic execution approaches}
     		This technique concept was first introduced on 2005 \cite{godefroid2005dart} (more details on section \ref{subsec:DART}). % The name used wasn't "Concolic" yet but the concept idea was the same
     	Since then the idea was further extended and combined with other testing techniques.\\
-    	
+
     	However, the general principle has been explored with different angles.
-    	
+
     		\subsubsection{Dynamic Symbolic Execution}
     		\label{subsec:dynamicSymbolicExec}
     			\emph{Dynamic Symbolic Execution} (DSE) also kwown as \emph{dynamic test generation} \cite{godefroid2005dart} is a popular approach of concolic execution. Its main feature is to have the concrete execution drive the symbolic execution.\\
-    			
+
     			We need to add a new store in order to save the concrete execution information $\sigma_c$.\\
     			We first choose an arbitrary value as input for our parameters. Then it executes the program concretely and symbolically at the same time updating both stores and the path constraints. Whenever the concrete execution takes a branch, the symbolic execution is directed toward the same branch and the constraints extracted from the branch condition are added to the current set of path constraints.\\
     			In order to explore different paths, the path conditions given by one or more branches can be negated and the solver invoked to find a satisfying assignment for the new constraints.\\
     			We can repeat this process as many time as we want to achieve the desired coverage.
-    		
+
 
   \section{Tools and languages}
     % Anything general to say bout the content (maybe explain the omnipresence of Microsoft in the market)
     % List tools and language, compare them if possible
-    
+
     % Let DART be first as it is the first used tool to use concolic
     \subsection{\emph{DART} : Directed Automated Random Testing}
     \label{subsec:DART}
     	\emph{DART} is presented as a tool for automatically testing software using concolic testing method (see section \ref{subsec:dynamicSymbolicExec}). It was introduced in 2005 making it the first the first tool to be created using concolic techniques. \\
-    	
+
     	\subsubsection{Methodology}
 	    	\emph{DART} combines three main techniques 	    	\cite{godefroid2005dart} in order to automate unif testing for a particular software :
 	    	\begin{enumerate}
@@ -79,17 +84,17 @@
 	    		\item An automatic generation of a test driver for this interface that performs random testing to simulate the most general environment the program can operate in
 	    		\item A dynamic analysis of how program behaves under random testing and automatic generation of new test inputs to direct systemically the execution along alternatives program paths
 	    	\end{enumerate}
-	    	
-	    % Add example ? (one on the Godefroy paper, but poorly illustrated) 
-	    	
-	    \subsubsection{Key strength/originality} 
+
+	    % Add example ? (one on the Godefroy paper, but poorly illustrated)
+
+	    \subsubsection{Key strength/originality}
 	    	% TODO [Loan] : need reformulation (copy paste)
 	    	The main strength of DART is that testing can be performed completely automatically on any program that compiles – there is no need to write any test driver or harness code.\\
 	    	During testing, DART detects standard errors such as program crashes, assertion violations, and non-termination.\\
 	    	DART provides an attractive alternative approach to static analyzers, because it is based on high-precision dynamic analysis instead, while being fully automated as static analysis. The main advantage of DART over static analysis is that every execution leading to an error that is found by DART is guaranteed to be sound. Two areas where we expect DART to compete especially well against static analyzers are the detection of interprocedural bugs and of bugs that arise through the use of library functions.\\
-	    	
+
 	    	DART is overall complementary to static analysis since it has its own limitations, namely the computational expense of running tests and the sometimes limited effectiveness of dynamic test generation to improve over random testing.
-    	
+
 
   \section{Conclusions}
     % What can we get from this paper in general
