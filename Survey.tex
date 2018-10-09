@@ -1,6 +1,10 @@
 \documentclass[11pt]{article}
 \usepackage{cite}
+\usepackage{graphicx}
 
+
+
+\graphicspath{{img/}} %
 \begin{document}
 
 % Subject : Symbolic executions technique for finding bugs %
@@ -13,12 +17,17 @@
     % Describe paper's goals and content
 
   \section{Introduction}
-    \subsection{(Attempting) A definition}
+    \subsection{A definition}
       % I tried to explain what is symbolic execution in simple concepts of software engineering
       The first occurences of symbolic execution described the then-new method as a middle ground~\cite{newapproach} between the two most-used method of its time. On one hand, program testing (\emph{e.g.: unit testing}) can not always detect a fault in a program and producing a correct test sample and proving that it indeed is correct is not that easy. On the other hand, program proving can indeed ensure that a program is correct from its entry point to the result but it heavily relys on the proof definitions by the programmer and the formal definition of the problem.\\
       Nowadays, symbolic execution is both described as (part of) the core of many modern techniques to software testing\cite{chopper:icse18} and an effective way to create tests suites with extensive coverage.\cite{threedecadeslater}
     \subsection{The concept}
-      % TODO: Adrien <= I'm working on this to warm up :)
+      The idea behind symbolic execution is to test an algorithm with \emph{symbolic values} rather than concrete values. So instead of using unit testing where a variable is set to a (usually random) value, the symbolic execution maintains a formula that contains all the possible values for the code to reach a particular point in the program. This formula is updated every time the program reaches a branching point. In figure~\ref{fig:symbolicsimple}, we show an example from~\ref{Visser:2004:TIG:1007512.1007526}  of a symbolic execution. Notice how it produces constraints over the variables to explore the algorithm's branching tree.
+      \begin{figure}
+        \includegraphics[width=0.5\textwidth]{symbolicsimple}
+        \caption{Swapping two integers and its symbolic execution tree}
+        \label{fig:symbolicsimple}
+      \end{figure}
     % What is symbolic execution and why do we do this survey
 
   \section{History}
