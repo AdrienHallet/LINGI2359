@@ -40,8 +40,28 @@
     \label{subsec:concolicExecution}
     	The name "concolic" is a portmanteau of the words "concrete" and "symbolic", the idea of this testing method is to mix symbolic execution alongside concrete ones.\\
     	
-    	This technique concept was first introduced on 2005 \cite{godefroid2005dart}. % The name used wasn't "Concolic" yet but the concept idea was the same
-    	Since then the idea was further extended and combined with other testing techniques.
+    	\begin{figure}
+    		\centering
+    		\includegraphics[width=0.34\columnwidth]{concrete-abstract.eps}  
+			\caption{Concrete and abstract execution machine models}
+			\label{fig:concrete-symbolic}
+    	\end{figure}
+    	
+    	\subsubsection*{Concolic execution approaches}
+    		This technique concept was first introduced on 2005 \cite{godefroid2005dart} (more details on section \ref{subsec:DART}). % The name used wasn't "Concolic" yet but the concept idea was the same
+    	Since then the idea was further extended and combined with other testing techniques.\\
+    	
+    	However, the general principle has been explored with different angles.
+    	
+    		\subsubsection{Dynamic Symbolic Execution}
+    		\label{subsec:dynamicSymbolicExec}
+    			\emph{Dynamic Symbolic Execution} (DSE) also kwown as \emph{dynamic test generation} \cite{godefroid2005dart} is a popular approach of concolic execution. Its main feature is to have the concrete execution drive the symbolic execution.\\
+    			
+    			We need to add a new store in order to save the concrete execution information $\sigma_c$.\\
+    			We first choose an arbitrary value as input for our parameters. Then it executes the program concretely and symbolically at the same time updating both stores and the path constraints. Whenever the concrete execution takes a branch, the symbolic execution is directed toward the same branch and the constraints extracted from the branch condition are added to the current set of path constraints.\\
+    			In order to explore different paths, the path conditions given by one or more branches can be negated and the solver invoked to find a satisfying assignment for the new constraints.\\
+    			We can repeat this process as many time as we want to achieve the desired coverage.
+    		
 
   \section{Tools and languages}
     % Anything general to say bout the content (maybe explain the omnipresence of Microsoft in the market)
@@ -49,7 +69,8 @@
     
     % Let DART be first as it is the first used tool to use concolic
     \subsection{\emph{DART} : Directed Automated Random Testing}
-    	\emph{DART} is presented as a tool for automatically testing software using concolic testing method (see section \ref{subsec:concolicExecution}). It was introduced in 2005 making it the first the first tool to be created using concolic techniques. \\
+    \label{subsec:DART}
+    	\emph{DART} is presented as a tool for automatically testing software using concolic testing method (see section \ref{subsec:dynamicSymbolicExec}). It was introduced in 2005 making it the first the first tool to be created using concolic techniques. \\
     	
     	\subsubsection{Methodology}
 	    	\emph{DART} combines three main techniques 	    	\cite{godefroid2005dart} in order to automate unif testing for a particular software :
