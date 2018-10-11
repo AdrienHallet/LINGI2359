@@ -74,7 +74,15 @@
     			We need to add a new store in order to save the concrete execution information $\sigma_c$.\\
     			We first choose an arbitrary value as input for our parameters. Then it executes the program concretely and symbolically at the same time updating both stores and the path constraints. Whenever the concrete execution takes a branch, the symbolic execution is directed toward the same branch and the constraints extracted from the branch condition are added to the current set of path constraints.\\
     			In order to explore different paths, the path conditions given by one or more branches can be negated and the solver invoked to find a satisfying assignment for the new constraints.\\
-    			We can repeat this process as many time as we want to achieve the desired coverage.
+    			We can repeat this process as many time as we want to achieve the desired coverage.\\
+    			
+    			Notice that it exists different strategies on the choice of the branch to negate, this heuristic choice which is crucial depends on the tool.\\
+    		
+    		\subsubsection*{Downside}
+    			\begin{description}
+    				\item[False Negative] Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
+    				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.
+    			\end{description}
 
 
   \section{Tools and languages}
@@ -84,15 +92,17 @@
     % Let DART be first as it is the first used tool to use concolic
     \subsection{\emph{DART} : Directed Automated Random Testing}
     \label{subsec:DART}
-    	\emph{DART} is presented as a tool for automatically testing software using concolic testing method (see section \ref{subsec:dynamicSymbolicExec}). It was introduced in 2005 making it the first the first tool to be created using concolic techniques. \\
+    	\emph{DART} is presented as a tool for automatically testing software using concolic testing method. It was introduced in 2005 making it the first the first tool to be created using concolic techniques and more specifically dynamic symbolic execution techniques (see section \ref{subsec:dynamicSymbolicExec}). \\
 
     	\subsubsection{Methodology}
-	    	\emph{DART} combines three main techniques 	    	\cite{godefroid2005dart} in order to automate unif testing for a particular software :
+	    	\emph{DART} combines three main techniques 	    	\cite{godefroid2005dart} in order to automate the process testing for a particular software :
 	    	\begin{enumerate}
 	    		\item An automated extraction of the interface of a program with its external environment using static source-code parsing
 	    		\item An automatic generation of a test driver for this interface that performs random testing to simulate the most general environment the program can operate in
 	    		\item A dynamic analysis of how program behaves under random testing and automatic generation of new test inputs to direct systemically the execution along alternatives program paths
-	    	\end{enumerate}  
+	    	\end{enumerate}
+	    		    	
+			\emph{DART} chooses the \emph{depth-first} strategy whenever it has to negate a branch.
 	    
 	    \subsubsection{Example}	
 		    Let consider the following program :
