@@ -78,10 +78,11 @@
     			
     			Notice that it exists different strategies on the choice of the branch to negate, this heuristic choice which is crucial depends on the tool.\\
     		
-    		\subsubsection*{Downside}
+    		\subsubsection*{Downside : Impaerfect symbolic execution}
     			\begin{description}
     				\item[False Negative] Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
-    				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.
+    				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
+    				According to \cite{Godefroid2008AutomatedWF} they calculated a divergence rates of over 60 \%
     			\end{description}
 
 
