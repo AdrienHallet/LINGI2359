@@ -83,6 +83,10 @@
     				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
     				According to \cite{Godefroid2008AutomatedWF} they calculated a divergence rates of over 60 \%
     			\end{description}
+    			
+    	\subsubsection{Selective Symbolic Execution}
+    	\label{subsec:selectiveSymbolicExec}
+    		TODO [Loan] : Lire article \cite{chipounov2012s2e} section 2
 
 
   \section{Tools and languages}
@@ -90,6 +94,7 @@
   	
     % Anything general to say bout the content (maybe explain the omnipresence of Microsoft in the market)
     % List tools and language, compare them if possible
+
 
     % Let DART be first as it is the first used tool to use concolic
     \subsection{\emph{DART} : Directed Automated Random Testing}
