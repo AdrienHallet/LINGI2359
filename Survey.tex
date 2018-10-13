@@ -68,17 +68,16 @@
 
     		\subsubsection{Dynamic Symbolic Execution}
     		\label{subsec:dynamicSymbolicExec}
-    		%TODO [LOAN] : reformuler, trop proche du survey
     			\emph{Dynamic Symbolic Execution} (DSE) also kwown as \emph{dynamic test generation} \cite{godefroid2005dart} is a popular approach of concolic execution. Its main feature is to have the concrete execution drive the symbolic execution.\\
 
-    			We need to add a new store in order to save the concrete execution information $\sigma_c$.\\
+    			This method need to add a new store in order to save the concrete execution information.\\
     			We first choose an arbitrary value as input for our parameters. Then it executes the program concretely and symbolically at the same time updating both stores and the path constraints. Whenever the concrete execution takes a branch, the symbolic execution is directed toward the same branch and the constraints extracted from the branch condition are added to the current set of path constraints.\\
     			In order to explore different paths, the path conditions given by one or more branches can be negated and the solver invoked to find a satisfying assignment for the new constraints.\\
     			We can repeat this process as many time as we want to achieve the desired coverage.\\
     			
-    			Notice that it exists different strategies on the choice of the branch to negate, this heuristic choice which is crucial depends on the tool.\\
+    			Notice that it exists different strategies on the choice of the branch to negate, this crucial heuristic choice depends of the tool.\\
     		
-    		\subsubsection*{Downside : Impaerfect symbolic execution}
+    		\subsubsection*{Downside : Imperfect symbolic execution}
     			\begin{description}
     				\item[False Negative] Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
     				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
