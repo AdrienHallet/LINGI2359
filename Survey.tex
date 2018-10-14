@@ -34,7 +34,7 @@
     % What is symbolic execution and why do we do this survey
 
   \section{History}
-    % Draft the history of symbolic execution, dig any trend up or whatever we can say about it.
+    We find the first papers on symbolic execution around 1975~\cite{newapproach}. Early methods proposed simple structures to hold conditions with a SAT-solver, the support of simple data types and were focused on algorithm testing (instead of large programs). While papers continue to grow on the subject, it really is around 2005 that symbolic execution really becomes a large thing with more and more frameworks and tools for software verification. The last ten years have seen more papers on the subject\footnote{Data from Google Scholar} (around 200.000) than the three decades following its introduction (half that much). Among the supporters of the method, we can identify two clear research poles, China~\cite{Hardware, memorytablemodel, CHEN2018118} and the United States of America, with an heavy participation of Microsoft~\cite{bouncer-securing-software-by-blocking-bad-input} which was pooling heavy resources in software and OS reliability, and the NASA~\cite{neurosymbolicexecution, DirectedIncrementalSymExe, visserWillemCorina}.
 
   \section{Method}
     % Begin with anything general to say (if any) then detail methods, could also be useful to compare them (if possible) and/or to say when/why a particular method is being used instead of another.
@@ -44,9 +44,14 @@
       \label{sub:basis}
       Symbolic execution works on those concepts by updating an internal list of symbols. The execution generates a new symbol for each introduced variable in an algorithm\cite{newapproach}. The symbolic execution runs over the algorithm's statements and builds the symbolic values when it encounters a branching point. The symbolically executed algorithm creates a \emph{state}\cite{visserWillemCorina} containing the symbolics values, a counter identifying the next line to be executed and a \emph{path condition}. This path condition is a simple boolean formula over the symbols, it creates a constraint for the algorithm to reach the current state of the program (this also allows to check for unreachable paths in programs~\cite{InfeasiblePathsEliminationWithSymbolicExecTechniques}). The path condition allows to recreate the execution up to its state. The states are stored in a \emph{symbolic execution tree} with the states as nodes and the transitions as edges (see figure~\ref{fig:symbolicsimple}).
     \subsection{Problems}
-      Symbolic Execution cannot be that perfect and hosts its bundle of problems that reduce either the confidence in or the performances of the concept. We have seen symbolic execution tree in~\ref{sub:basis}. Small algorithms can use such methods but actual programs need to be tested in \emph{integration}. In large environments, the tree's branching factor will produce too many nodes (\emph{state-space explosion}) for the performances to stay relevant, sometimes creating infinite loops in the graph~\cite{forwardSymbolicExecution}. Reducing the state space or pruning them is not enough. To improve the performances, we can depth-first-search the graph but it does not prevent infinite loops until we add a max depth (as KLEE or EXE do). %TODO: Ref the tools when (if) we cite them.
-      Pruning heuristics (\emph{e.g.:def-use pairs distance}) can be used to reduce the tree's branching factor, we may randomly select a path (emph{i.e: the path condition}), weighting the shallowest nodes to avoid dead-loops. The random technique is exploited by a lot of \emph{fuzzing techniques}~\cite{CHEN2018118} which uses the injection of random values to detect program's faults. Another solution lies in the \emph{concolic execution} (see~\ref{subsec:concolicExecution}).
-      %TODO: Adrien => explore the in-memory variable problem and see if there are others.
+      \subsubsection{State-Space Explosion}
+        Symbolic Execution cannot be that perfect and hosts its bundle of problems that reduce either the confidence in or the performances of the concept. We have seen symbolic execution tree in~\ref{sub:basis}. Small algorithms can use such methods but actual programs need to be tested in \emph{integration}. In large environments, the tree's branching factor will produce too many nodes (\emph{state-space explosion}) for the performances to stay relevant, sometimes creating infinite loops in the graph~\cite{forwardSymbolicExecution}. Reducing the state space or pruning them is not enough. To improve the performances, we can depth-first-search the graph but it does not prevent infinite loops until we add a max depth (as KLEE or EXE do). %TODO: Ref the tools when (if) we cite them.
+        Pruning heuristics (\emph{e.g.:def-use pairs distance}) can be used to reduce the tree's branching factor, we may randomly select a path (emph{i.e: the path condition}), weighting the shallowest nodes to avoid dead-loops. The random technique is exploited by a lot of \emph{fuzzing techniques}~\cite{CHEN2018118} which uses the injection of random values to detect program's faults. Another solution lies in the \emph{concolic execution} (see~\ref{subsec:concolicExecution}).
+
+      \subsubsection{Modeling the memory}
+        Another technical difficulty lies in the \emph{memory model}. As said before, a symbol $\alpha$ represents a variable \texttt{a} with a value. In the programming world, it means there is a pointer \texttt{a*} that stores the address to an allocated memory block. The initial approach~\cite{newapproach} proposed a \emph{fully symbolic memory}. The symbols are stored in plain states holding their path condition with either a duplication of the states depending on their memory status called \emph{state forking} where every possible execution is forked from the main branch (\emph{e.g.: accessing an array of size 10 with a variable $i$ that depends on the context will fork 10 states from the main memory state, each one with $i$ from 0 to 9}). Fully symbolic memory is therfore slowed by an increased \emph{state-space explosion}. To reduce memory usage, some tools may represent an artificial memory space~\cite{5635129}, which reduces the size of the general space by allowing more memory to each path condition, although doing so will void some execution paths, leaving potential bugs out of the symbolic execution. An italian approach~\cite{memorymodelpointers} proposes the use of a \emph{symbolic} adress which holds the condition to which address the variable points to, which drastically reduces the amount of memory states.
+
+        Instead of fully modeling the memory, there also is the \emph{abstract symbol table}~\cite{memorytablemodel} which records tuples [variable, address, symbolic value]. This method has the advantage of supporting complex data types (some fully memory models cannot express structures) and memory aliasing (instead of creating a new variable copied from another in older methods).
   \section{Variants}
     % I split the section because it was too heavy for my liking and I think we can better state the base and what challenges it produces, then look at how we can solve them with variants. It also allows the reader to just skip the variants in the future if he just wants to know about the method.
     \subsection{Concolic execution}
@@ -74,16 +79,16 @@
     			We first choose an arbitrary value as input for our parameters. Then it executes the program concretely and symbolically at the same time updating both stores and the path constraints. Whenever the concrete execution takes a branch, the symbolic execution is directed toward the same branch and the constraints extracted from the branch condition are added to the current set of path constraints.\\
     			In order to explore different paths, the path conditions given by one or more branches can be negated and the solver invoked to find a satisfying assignment for the new constraints.\\
     			We can repeat this process as many time as we want to achieve the desired coverage.\\
-    			
+
     			Notice that it exists different strategies on the choice of the branch to negate, this crucial heuristic choice depends of the tool.\\
-    		
+
     		\subsubsection*{Downside : Imperfect symbolic execution}
     			\begin{description}
     				\item[False Negative] Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
     				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
     				According to \cite{Godefroid2008AutomatedWF} they calculated a divergence rates of over 60 \%
     			\end{description}
-    			
+
     	\subsubsection{Selective Symbolic Execution}
     	\label{subsec:selectiveSymbolicExec}
     		TODO [Loan] : Lire article \cite{chipounov2012s2e} section 2
@@ -91,7 +96,7 @@
 
   \section{Tools and languages}
   	Many tools exist for symbolic execution, \href{https://en.wikipedia.org/wiki/Symbolic_execution\#Tools}{Wikipedia} mention 22 of them. Another \href{https://github.com/ksluckow/awesome-symbolic-execution\#tools}{source} claiming to "curate a list of awesome symbolic execution resources including tools" mention 35 different tools spread over 10 different languages.\\ %TODO [Loan] : est-ce qu'on ajoute ça dans la bliblio ?
-  	
+
     % Anything general to say bout the content (maybe explain the omnipresence of Microsoft in the market)
     % List tools and language, compare them if possible
 
@@ -108,16 +113,16 @@
 	    		\item An automatic generation of a test driver for this interface that performs random testing to simulate the most general environment the program can operate in
 	    		\item A dynamic analysis of how program behaves under random testing and automatic generation of new test inputs to direct systemically the execution along alternatives program paths
 	    	\end{enumerate}
-	    		    	
+
 			\emph{DART} chooses the \emph{depth-first} strategy whenever it has to negate a branch.
-	    
-	    \subsubsection{Example}	
+
+	    \subsubsection{Example}
 		    Let consider the following program :
-		     
+
 		    \begin{algorithm}
-		    	\SetKwFunction{Ffoo}{foo} 
+		    	\SetKwFunction{Ffoo}{foo}
 		    	\SetKwProg{Fn}{Function}{:}{}
-		    	
+
 		    	\Fn{\Ffoo{int x, int y}}{
 			    	\If{x != y} {
 						\If {2 * x == x + 10} {
@@ -126,9 +131,9 @@
 			    	}
 			    	\KwRet SUCCESS\;
 		    	}
-		    	
+
 		    \end{algorithm}
-	    	
+
 	    	This function is defective as it may lead to an error statement for some value of $x$ and $y$.\\
 	    	\emph{DART} start by guessing values for both $x$ and $y$ for instance $269167349$ and $889801541$. With this values the function return  successfully, during the execution two predicates were formed created by the \texttt{if} statements, in our case the path constraint at the end is : $\langle x_0 \neq y_0, 2 \times x_0 \neq x_0 + 10 \rangle$ with $x_0$ and $y_0$ both beings \emph{symbolic variables}.\\ %TODO : garder la convention de notation du survey
 	    	While we maintain this predicates, all path will lead to the same end. So in order to force  the program through a potential different outcome we change one of the predicate and look at the result. If we negate the last predicate we have the following path constraint : $\langle x_0 \neq y_0, 2 \times x_0 = x_0 + 10 \rangle$ in which $x_0=10$ and $y_0=889801541$ is a solution. Using this values as inputs the program end up into the \texttt{ERROR} as wanted.
