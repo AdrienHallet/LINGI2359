@@ -160,12 +160,19 @@
     	S$^2$E is a platform for writing tools that analyze the properties and behavior of software system. It comes as a modular library that gives virtual machines symbolic execution and program analysis capabilities.\cite{S2EWebSite} It uses selective symbolic execution concolic execution (see section  \ref{subsec:selectiveSymbolicExec}).
     	
     	\subsubsection{Methodology}
-    		TODO (Loan)
+    		S$^2$E switch dynamically between symbolic and concrete execution. This transition is not trivial and must be treated separately.\\
+    		Let \texttt{A} and \texttt{B} be function such as \texttt{A} calls \texttt{B}.\\
+    		\subsubsection*{From concrete to symbolic and back}
+    			\texttt{A} calls \texttt{B} with concrete arguments as we are still in a concrete execution. However \texttt{B} is symbolic, therefore it modify the arguments sends by \texttt{A} to make them symbolic. For instance \texttt{B(10)} become \texttt{B($\lambda$)}. In can additionally be set to some constraints, for example \texttt{B($\lambda < 15$)}.\\
+    			After the transition occurs, S$^2$E executes \texttt{B} symbolically using the symbolic argument(s) and at the same time with the concrete argument(s).\\
+    			Once the exploration of \texttt{B} is over, S$^2$E returns to \texttt{A} the concrete returned value of the concrete execution.\\
+    			In this way, the execution of \texttt{A} is always consistent, meanwhile S$^2$E use the extra symbolic path in its analyzer plugin to check for possible issues.
+    			
+    		\subsubsection*{From symbolic to concrete and back}
     	
     	%TODO : mettre ça quelque part peut-être ? "S2E is built upon the KLEE symbolic execution engine and the QEMU virtual machine emulator."
     	%TODO : ajouter dans les spécificités à propos de la lazy concretization "Note that S2E actually employs lazy concretization: It converts the value of x from symbolic to concrete on-demand, only when concretely running code is about to branch on a condition that depends on the value of x."
     	
-    	%TODO : ajouter des détails sur l'implémentation de l'outil
     	
     	\subsubsection{Example}
     	\label{subsec:S2EExample}
