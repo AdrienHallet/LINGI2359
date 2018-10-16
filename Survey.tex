@@ -98,13 +98,13 @@
     			\centering
     			\includegraphics[scale=1.]{selectiveSymbolicExecExample.png}
     			\label{fig:selectiveSymbolicExample}
-    			\caption{Multipath/single-path execution: three different modules (left) and the resulting execution tree (right). Shaded areas represent the multipath (symbolic) execution domain, while the white areas are single-path}
+    			\caption{Multipath/single-path execution: three different modules (left) and the resulting execution tree (right). Shaded areas represent the multipath (symbolic) execution domain, while the white areas are single-path. More details in section \ref{subsec:S2EExample}}
     		\end{figure}
 
 
 
   \section{Tools and languages}
-  	Many tools exist for symbolic execution, \href{https://en.wikipedia.org/wiki/Symbolic_execution\#Tools}{Wikipedia} mention 22 of them. Another \href{https://github.com/ksluckow/awesome-symbolic-execution\#tools}{source} claiming to "curate a list of awesome symbolic execution resources including tools" mention 35 different tools spread over 10 different languages.\\ %TODO [Loan] : est-ce qu'on ajoute ça dans la bliblio ?
+  	Many tools exist for symbolic execution, \href{https://en.wikipedia.org/wiki/Symbolic_execution\#Tools}{Wikipedia} mention 22 of them. Another \href{https://github.com/ksluckow/awesome-symbolic-execution\#tools}{source} claiming to "curate a list of awesome symbolic execution resources including tools" mention 35 different tools spread over 10 different languages.\\ %TODO [Loan] : est-ce qu'on ajoute ça dans la biblio ?
 
     % Anything general to say bout the content (maybe explain the omnipresence of Microsoft in the market)
     % List tools and language, compare them if possible
@@ -159,6 +159,8 @@
     \label{subsec:S2E}
     	S$^2$E is a platform for writing tools that analyze the properties and behavior of software system. It comes as a modular library that gives virtual machines symbolic execution and program analysis capabilities.\cite{S2EWebSite} It uses selective symbolic execution concolic execution (see section  \ref{subsec:selectiveSymbolicExec}).
     	
+    	\subsubsection{Methodology}
+    		TODO (Loan)
     	
     	%TODO : mettre ça quelque part peut-être ? "S2E is built upon the KLEE symbolic execution engine and the QEMU virtual machine emulator."
     	%TODO : ajouter dans les spécificités à propos de la lazy concretization "Note that S2E actually employs lazy concretization: It converts the value of x from symbolic to concrete on-demand, only when concretely running code is about to branch on a condition that depends on the value of x."
@@ -166,8 +168,10 @@
     	%TODO : ajouter des détails sur l'implémentation de l'outil
     	
     	\subsubsection{Example}
-    		%TODO
-    		TODO (Loan) ajouter un exemple basé sur la section 2 de \cite{chipounov2012s2e}
+    	\label{subsec:S2EExample}
+    		Let's use the figure \ref{fig:selectiveSymbolicExample} as a reference example, it describes an application \emph{app} using a library \emph{lib} on top of an OS \emph{kernel}. We are interested in testing the \emph{lib}, but not the \emph{app} nor the \emph{kernel}. Therefore only the \emph{lib} will be executed symbolically, the 2 others will be concrete.\\
+    		
+    		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the executions returns again to the concrete domain, the execution tree no longer expand, it may still grows, but it does not add any new paths until the execution become symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.
 
 
   \section{Conclusions}
