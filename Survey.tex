@@ -159,6 +159,9 @@
     \label{subsec:S2E}
     	S$^2$E is a platform for writing tools that analyze the properties and behavior of software system. It comes as a modular library that gives virtual machines symbolic execution and program analysis capabilities.\cite{S2EWebSite} It uses selective symbolic execution concolic execution (see section  \ref{subsec:selectiveSymbolicExec}).
     	
+    	    	
+    	%TODO : mettre ça quelque part peut-être ? "S2E is built upon the KLEE symbolic execution engine and the QEMU virtual machine emulator."
+    	
     	\subsubsection{Methodology}
     		S$^2$E switch dynamically between symbolic and concrete execution. This transition is not trivial and must be treated separately.\\
     		Let \texttt{A} and \texttt{B} be function such as \texttt{A} calls \texttt{B}.\\
@@ -169,9 +172,19 @@
     			In this way, the execution of \texttt{A} is always consistent, meanwhile S$^2$E use the extra symbolic path in its analyzer plugin to check for possible issues.
     			
     		\subsubsection*{From symbolic to concrete and back}
-    	
-    	%TODO : mettre ça quelque part peut-être ? "S2E is built upon the KLEE symbolic execution engine and the QEMU virtual machine emulator."
-    	%TODO : ajouter dans les spécificités à propos de la lazy concretization "Note that S2E actually employs lazy concretization: It converts the value of x from symbolic to concrete on-demand, only when concretely running code is about to branch on a condition that depends on the value of x."
+    			\texttt{A} calls \texttt{B} with symbolic arguments as we are still in a symbolic execution. However \texttt{B} is concrete, therefore it modify the arguments sends by \texttt{A} to make them concrete while still maintaining path constraints. For instance if we have the path constraint  $\langle \lambda < 5 \rangle$, we can choose -20 or 3 as a concrete value but not 5 or 42.\\
+    			After this choice, \texttt{B} execute concretely then return symbolically back to \texttt{A} which resume symbolically.\\
+    			
+    			Note that S$^2$E actually employs "lazy-concretization": It converts the value of $\lambda$ from symbolic to concrete on-demand, only when concretely running code is about to branch on a condition that depends on the value of $\lambda$. \\
+    			
+    			It's important to mention that this transition may lead to the "overconstraining" problem, which impact both the soundness and completeness of the tool. The problem that may rises can be :
+    			\begin{itemize}
+    				\item Exclusion of paths due to the concretisation of the arguments
+    				\item Exclusion of paths indirectly due to the the constrained return value
+and side effects
+    			\end{itemize}
+    			%TODO : il y aurait une solution à ce problème en marquand les contraitnes comme "soft" ou quoi, à approfondir si on à le temps
+    		
     	
     	
     	\subsubsection{Example}
