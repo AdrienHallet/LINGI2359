@@ -400,3 +400,25 @@ keywords = {Symbolic Execution ; Formal Semantics ; Programming Languages ; Prog
 	title={S2E: A Platform for In-Vivo Analysis of Software Systems},
 	url={https://s2e.systems/}
 }
+
+@InProceedings{jDart,
+	author="Luckow, Kasper
+	and Dimja{\v{s}}evi{\'{c}}, Marko
+	and Giannakopoulou, Dimitra
+	and Howar, Falk
+	and Isberner, Malte
+	and Kahsai, Temesghen
+	and Rakamari{\'{c}}, Zvonimir
+	and Raman, Vishwanath",
+	editor="Chechik, Marsha
+	and Raskin, Jean-Fran{\c{c}}ois",
+	title="JDart: A Dynamic Symbolic Analysis Framework",
+	booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+	year="2016",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="442--459",
+	pdfUrl="https://pdfs.semanticscholar.org/7d50/0d68e48c87c20925f5bc10fc5d861289a1a0.pdf",
+	abstract="We describe JDart, a dynamic symbolic analysis framework for Java. A distinguishing feature of JDart is its modular architecture: the main component that performs dynamic exploration communicates with a component that efficiently constructs constraints and that interfaces with constraint solvers. These components can easily be extended or modified to support multiple constraint solvers or different exploration strategies. Moreover, JDart has been engineered for robustness, driven by the need to handle complex NASA software. These characteristics, together with its recent open sourcing, make JDart an ideal platform for research and experimentation. In the current release, JDart supports the CORAL, SMTInterpol, and Z3 solvers, and is able to handle NASA software with constraints containing bit operations, floating point arithmetic, and complex arithmetic operations (e.g., trigonometric and nonlinear). We illustrate how JDart has been used to support other analysis techniques, such as automated interface generation and testing of libraries. Finally, we demonstrate the versatility and effectiveness of JDart, and compare it with state-of-the-art dynamic or pure symbolic execution engines through an extensive experimental evaluation.",
+	isbn="978-3-662-49674-9"
+}
