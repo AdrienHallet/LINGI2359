@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[11pt]{IEEEtran}
 
 \usepackage{cite}
 \usepackage{graphicx}
@@ -22,7 +22,7 @@
   \section{Introduction}
     \subsection{A definition}
       % I tried to explain what is symbolic execution in simple concepts of software engineering
-      The first occurences of symbolic execution described the then-new method as a middle ground~\cite{newapproach} between the two most-used method of its time. On one hand, program testing (\emph{e.g.: unit testing}) can not always detect a fault in a program and producing a correct test sample and proving that it indeed is correct is not that easy. On the other hand, program proving can indeed ensure that a program is correct from its entry point to the result but it heavily relys on the proof definitions by the programmer and the formal definition of the problem.\\
+      The first occurences of symbolic execution described the then-new method as a middle ground~\cite{newapproach} between the two most-used method of its time: \emph{program testing} and \emph{program provign}.
       Nowadays, symbolic execution is both described as (part of) the core of many modern techniques to software testing\cite{chopper:icse18} and an effective way to create tests suites with extensive coverage.\cite{threedecadeslater}
     \subsection{The concept}
       The idea behind symbolic execution is to test an algorithm with \emph{symbolic values} rather than concrete values. So instead of using unit testing where a variable is set to a (usually random) value, the symbolic execution maintains a formula that contains all the possible values for the code to reach a particular point in the program. This formula is updated every time the program reaches a branching point. In figure~\ref{fig:symbolicsimple}, we show an example from~\cite{visserWillemCorina} of a symbolic execution. Notice how it produces constraints over the variables to explore the algorithm's branching tree.
@@ -56,14 +56,7 @@
     % I split the section because it was too heavy for my liking and I think we can better state the base and what challenges it produces, then look at how we can solve them with variants. It also allows the reader to just skip the variants in the future if he just wants to know about the method.
     \subsection{Concolic execution}
     \label{subsec:concolicExecution}
-    	The name "concolic" is a portmanteau of the words "concrete" and "symbolic", the idea of this testing method is to mix symbolic execution alongside concrete ones.\\
-
-    	\begin{figure}
-    		\centering
-    		\includegraphics[width=0.34\columnwidth]{concrete-abstract.eps}
-			\caption{Concrete and abstract execution machine models}
-			\label{fig:concrete-symbolic}
-    	\end{figure}
+    	\emph{Concolic}, portmanteau from \emph{concrete} and \emph{symbolic}, the idea of this testing method is to mix symbolic execution alongside concrete ones.\\
 
     	\subsubsection*{Concolic execution approaches}
     		This technique concept was first introduced on 2005 \cite{godefroid2005dart} (more details on section \ref{subsec:DART}). % The name used wasn't "Concolic" yet but the concept idea was the same
@@ -92,7 +85,7 @@
     	\subsubsection{Selective Symbolic Execution}
     	\label{subsec:selectiveSymbolicExec}
     		This approach is based on the observation that often only some families of paths are meaningful\cite{chipounov2012s2e}. We focus the exploration on some designated interesting component of the software while not caring about the others. It offers an illusion of symbolically executing a full software stack, while actually executing symbolically only select components.\\
-    		
+
     		The selective symbolic execution switch back and forth between symbolic and concrete execution, depending if the current component is relevant or not. When it is symbolic the tree may expand in width and depth, on the other hand in a concrete execution it only grows in depth as only one branch is created (see Figure \ref{fig:selectiveSymbolicExample} ).
     		\begin{figure}
     			\centering
@@ -154,14 +147,14 @@
 	    	DART provides an attractive alternative approach to static analyzers, because it is based on high-precision dynamic analysis instead, while being fully automated as static analysis. The main advantage of DART over static analysis is that every execution leading to an error that is found by DART is guaranteed to be sound. Two areas where we expect DART to compete especially well against static analyzers are the detection of interprocedural bugs and of bugs that arise through the use of library functions.\\
 
 	    	DART is overall complementary to static analysis since it has its own limitations, namely the computational expense of running tests and the sometimes limited effectiveness of dynamic test generation to improve over random testing.
-	    	
+
 	\subsection{S$^2$E}
     \label{subsec:S2E}
     	S$^2$E is a platform for writing tools that analyze the properties and behavior of software system. It comes as a modular library that gives virtual machines symbolic execution and program analysis capabilities.\cite{S2EWebSite} It uses selective symbolic execution concolic execution (see section  \ref{subsec:selectiveSymbolicExec}).
-    	
-    	    	
+
+
     	%TODO : mettre ça quelque part peut-être ? "S2E is built upon the KLEE symbolic execution engine and the QEMU virtual machine emulator."
-    	
+
     	\subsubsection{Methodology}
     		S$^2$E switch dynamically between symbolic and concrete execution. This transition is not trivial and must be treated separately.\\
     		Let \texttt{A} and \texttt{B} be function such as \texttt{A} calls \texttt{B}.\\
@@ -170,13 +163,13 @@
     			After the transition occurs, S$^2$E executes \texttt{B} symbolically using the symbolic argument(s) and at the same time with the concrete argument(s).\\
     			Once the exploration of \texttt{B} is over, S$^2$E returns to \texttt{A} the concrete returned value of the concrete execution.\\
     			In this way, the execution of \texttt{A} is always consistent, meanwhile S$^2$E use the extra symbolic path in its analyzer plugin to check for possible issues.
-    			
+
     		\subsubsection*{From symbolic to concrete and back}
     			\texttt{A} calls \texttt{B} with symbolic arguments as we are still in a symbolic execution. However \texttt{B} is concrete, therefore it modify the arguments sends by \texttt{A} to make them concrete while still maintaining path constraints. For instance if we have the path constraint  $\langle \lambda < 5 \rangle$, we can choose -20 or 3 as a concrete value but not 5 or 42.\\
     			After this choice, \texttt{B} execute concretely then return symbolically back to \texttt{A} which resume symbolically.\\
-    			
+
     			Note that S$^2$E actually employs "lazy-concretization": It converts the value of $\lambda$ from symbolic to concrete on-demand, only when concretely running code is about to branch on a condition that depends on the value of $\lambda$. \\
-    			
+
     			It's important to mention that this transition may lead to the "overconstraining" problem, which impact both the soundness and completeness of the tool. The problem that may rises can be :
     			\begin{itemize}
     				\item Exclusion of paths due to the concretisation of the arguments
@@ -184,13 +177,13 @@
 and side effects
     			\end{itemize}
     			%TODO : il y aurait une solution à ce problème en marquand les contraitnes comme "soft" ou quoi, à approfondir si on à le temps
-    		
-    	
-    	
+
+
+
     	\subsubsection{Example}
     	\label{subsec:S2EExample}
     		Let's use the figure \ref{fig:selectiveSymbolicExample} as a reference example, it describes an application \emph{app} using a library \emph{lib} on top of an OS \emph{kernel}. We are interested in testing the \emph{lib}, but not the \emph{app} nor the \emph{kernel}. Therefore only the \emph{lib} will be executed symbolically, the 2 others will be concrete.\\
-    		
+
     		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the executions returns again to the concrete domain, the execution tree no longer expand, it may still grows, but it does not add any new paths until the execution become symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.
 
 
