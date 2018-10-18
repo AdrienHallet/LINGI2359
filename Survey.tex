@@ -75,11 +75,11 @@
     			Notice that it exists different strategies on the choice of the branch to negate, this crucial heuristic choice depends of the tool.\\
 
     		\subsubsection*{Downside : Imperfect symbolic execution}
-    			\begin{description}
-    				\item[False Negative] Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
-    				\item[Path Divergence] In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
+    			\begin{itemize} % description layout act strangely here
+    				\item \emph{False Negative} : Missed path. For example, when another function from the one tested is not symbolically tracked but its result is needed to explore a particular path.
+    				\item \emph{Path Divergence} : In some situations the engine can't guess that no input can provoke an error. In other word, whenever an actual execution path does not match the program path predicted by symbolic execution for a given input vector. For example, assert on a negative value of an absolute value due to the untracked side effect of the \texttt{abs()} function.\\
     				According to \cite{Godefroid2008AutomatedWF} they calculated a divergence rates of over 60 \%
-    			\end{description}
+    			\end{itemize}
 
     	\subsubsection{Selective Symbolic Execution}
     	\label{subsec:selectiveSymbolicExec}
@@ -88,7 +88,7 @@
     		The selective symbolic execution switch back and forth between symbolic and concrete execution, depending if the current component is relevant or not. When it is symbolic the tree may expand in width and depth, on the other hand in a concrete execution it only grows in depth as only one branch is created (see Figure \ref{fig:selectiveSymbolicExample} ).
     		\begin{figure}
     			\centering
-    			\includegraphics[scale=1.]{selectiveSymbolicExecExample.png}
+    			\includegraphics[scale=0.9]{selectiveSymbolicExecExample.png}
     			\label{fig:selectiveSymbolicExample}
     			\caption{Multipath/single-path execution: three different modules (left) and the resulting execution tree (right). Shaded areas represent the multipath (symbolic) execution domain, while the white areas are single-path. More details in section \ref{subsec:S2EExample}}
     		\end{figure}
