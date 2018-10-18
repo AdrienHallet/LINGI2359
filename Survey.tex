@@ -149,7 +149,20 @@
 	    	Any errors founded by DART during the execution is sure to be sound.\\
 
 	    	But DART has its own limitations, particularly the limited effectiveness of dynamic test generation to improve over random testing and the computational cost of running tests.
-	    	
+	
+	\subsection{Cute \& jCUTE}
+		\emph{CUTE} and \emph{jCUTE} are automated concolic testing tools, CUTE stands for Concolic Unit Testing Engine\cite{sen2006cute}. The first one is for \emph{C} programs while the second one target \emph{Java} ones.\\
+		
+		Both tools consist of two main modules : 
+		\begin{itemize}
+			\item \emph{Instrumentation module}\footnote{more precisely it uses \emph{CIL} and \emph{SOOT} compiler framework} : add some code in the program under test so that the program calls the library during execution
+for performing symbolic execution %TODO : est-ce que je dois ajouter les sources mises dans le document concernant CIL et SOOT ?
+			\item \emph{Library} : to perform symbolic execution, solve constraints and control thread schedule
+		\end{itemize}
+		
+		By now, \emph{CUTE} is obsolete and has been replaced by \emph{CREST}\cite{CuteWebSite} last commit on the \href{https://github.com/jburnim/crest}{official repository of the project} date of 2017. \\
+		\emph{jCUTE} is the first concolic execution engine for \emph{java} \cite{jDart} designed and implemented around 2006. It is no longer maintained, last commit on the \href{https://github.com/osl/jcute}{official repository of the project} date of 2013. 
+	   	
 	\subsection{JDART}
 		\emph{JDART} describes itself as a dynamic symbolic analysis framework for \emph{Java} \cite{jDart}.\\
 		The main goal of the tool is to build a dynamic symbolic analysis tool that can be used to industrial scale complex software. Another important aspect was the main design guideline they wish to be modular and extensible.\\
