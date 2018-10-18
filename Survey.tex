@@ -140,12 +140,12 @@
 	    	While we maintain this predicates, all path will lead to the same end. So in order to force  the program through a potential different outcome we change one of the predicate and look at the result. If we negate the last predicate we have the following path constraint : $\langle x_0 \neq y_0, 2 \times x_0 = x_0 + 10 \rangle$ in which $x_0=10$ and $y_0=889801541$ is a solution. Using this values as inputs the program end up into the \texttt{ERROR} as wanted.
 
 	    \subsubsection{Key strength/originality}
-	    	% TODO [Loan] : need reformulation (copy paste)
-	    	The main strength of DART is that testing can be performed completely automatically on any program that compiles – there is no need to write any test driver or harness code.\\
+	    	One of the main strength of DART is that, on any compilable program, testing can be performed completely automatically. There is no need to write any additional harness code or test driver.\\
 	    	During testing, DART detects standard errors such as program crashes, assertion violations, and non-termination.\\
-	    	DART provides an attractive alternative approach to static analyzers, because it is based on high-precision dynamic analysis instead, while being fully automated as static analysis. The main advantage of DART over static analysis is that every execution leading to an error that is found by DART is guaranteed to be sound. Two areas where we expect DART to compete especially well against static analyzers are the detection of interprocedural bugs and of bugs that arise through the use of library functions.\\
+	    	Due to its based on precised dynamic analysis, DART provides an interesting alternative to static analyzer. It is expected to be very good at the detection of some kind of bugs\footnote{Especially  interprocedural bugs and bugs that happen through library functions use} compare to a dynamic analyzers.\\
+	    	Any errors founded by DART during the execution is sure to be sound.\\
 
-	    	DART is overall complementary to static analysis since it has its own limitations, namely the computational expense of running tests and the sometimes limited effectiveness of dynamic test generation to improve over random testing.
+	    	But DART has its own limitations, particularly the limited effectiveness of dynamic test generation to improve over random testing and the computational cost of running tests.
 
 	\subsection{S$^2$E}
     \label{subsec:S2E}
