@@ -12,7 +12,7 @@
 
 % Subject : Symbolic executions technique for finding bugs %
 \title{A Survey of\\Symbolic Executions Techniques} % NB: I removed the "for finding bugs" because "bug" is not well-defined and we can clearly state in the introduction why we use symbolic execution.
-\author{Hallet Adrien \and Sens Loan}
+\author{Hallet Adrien, Sens Loan}
 \date{\today}
 \maketitle
 
@@ -47,8 +47,8 @@
       \label{sec:problems}
       \subsubsection{State-Space Explosion}
         \label{subsec:state-space-explosion}
-        Symbolic Execution cannot be that perfect and hosts its bundle of problems that reduce either the confidence in or the performances of the concept. We have seen symbolic execution tree in~\ref{sub:basis}. Small algorithms can use such methods but actual programs need to be tested in \emph{integration}. In large environments, the tree's branching factor will produce too many nodes (\emph{state-space explosion}) for the performances to stay relevant, sometimes creating infinite loops in the graph~\cite{forwardSymbolicExecution}. Reducing the state space or pruning them is not enough. To improve the performances, we can depth-first-search the graph but it does not prevent infinite loops until we add a max depth (as KLEE or EXE do). %TODO: Ref the tools when (if) we cite them.
-        Pruning heuristics (\emph{e.g.:def-use pairs distance}) can be used to reduce the tree's branching factor, we may randomly select a path (emph{i.e: the path condition}), weighting the shallowest nodes to avoid dead-loops. The random technique is exploited by a lot of \emph{fuzzing techniques}~\cite{CHEN2018118} which uses the injection of random values to detect program's faults. Another solution lies in the \emph{concolic execution} (see~\ref{subsec:concolicExecution}).
+        Symbolic Execution cannot be that perfect and hosts its bundle of problems that reduce either the confidence in or the performances of the concept. We have seen symbolic execution tree in~\ref{sub:basis}. Small algorithms can use such methods but actual programs need to be tested in \emph{integration}. In large environments, the tree's branching factor will produce too many nodes (\emph{state-space explosion}) for the performances to stay relevant, sometimes creating infinite loops in the graph~\cite{forwardSymbolicExecution}. Reducing the state space or pruning them is not enough. To improve the performances, we can depth-first-search the graph but it does not prevent infinite loops until we add a max depth (as KLEE or EXE do, see sections~\ref{subsec:exe},~\ref{subsec:klee}).
+        Pruning heuristics (\emph{e.g.:def-use pairs distance}) can be used to reduce the tree's branching factor, we may randomly select a path (emph{i.e: the path condition}), weighting the shallowest nodes to avoid dead-loops. The random technique is exploited by a lot of \emph{fuzzing techniques}~\cite{CHEN2018118} which uses the injection of random values to detect program's faults. Another solution lies in the \emph{concolic execution} (see~\ref{subsec:concolicExecution}). Very recently (july 2018), a team of researchers~\cite{neurosymbolicexecution} managed to successfully test programs that were previously untested due to complex memory usage leading to complex explosion. They used a new approach with neural networks to solve the constraints within the states.
 
       \subsubsection{Modeling the memory}
         Another technical difficulty lies in the \emph{memory model}. As said before, a symbol $\alpha$ represents a variable \texttt{a} with a value. In the programming world, it means there is a pointer \texttt{a*} that stores the address to an allocated memory block. The initial approach~\cite{newapproach} proposed a \emph{fully symbolic memory}. The symbols are stored in plain states holding their path condition with either a duplication of the states depending on their memory status called \emph{state forking} where every possible execution is forked from the main branch (\emph{e.g.: accessing an array of size 10 with a variable $i$ that depends on the context will fork 10 states from the main memory state, each one with $i$ from 0 to 9}). Fully symbolic memory is therfore slowed by an increased \emph{state-space explosion}. To reduce memory usage, some tools may represent an artificial memory space~\cite{5635129}, which reduces the size of the general space by allowing more memory to each path condition, although doing so will void some execution paths, leaving potential bugs out of the symbolic execution. An italian approach~\cite{memorymodelpointers} proposes the use of a \emph{symbolic} adress which holds the condition to which address the variable points to, which drastically reduces the amount of memory states.
@@ -149,30 +149,30 @@
 	    	Any errors founded by DART during the execution is sure to be sound.\\
 
 	    	But DART has its own limitations, particularly the limited effectiveness of dynamic test generation to improve over random testing and the computational cost of running tests.
-	
+
 	\subsection{Cute \& jCUTE}
 		\emph{CUTE} and \emph{jCUTE} are automated concolic testing tools, CUTE stands for Concolic Unit Testing Engine\cite{sen2006cute}. The first one is for \emph{C} programs while the second one target \emph{Java} ones.\\
-		
-		Both tools consist of two main modules : 
+
+		Both tools consist of two main modules :
 		\begin{itemize}
 			\item \emph{Instrumentation module}\footnote{more precisely it uses \emph{CIL} and \emph{SOOT} compiler framework} : add some code in the program under test so that the program calls the library during execution
 for performing symbolic execution %TODO : est-ce que je dois ajouter les sources mises dans le document concernant CIL et SOOT ?
 			\item \emph{Library} : to perform symbolic execution, solve constraints and control thread schedule
 		\end{itemize}
-		
+
 		By now, \emph{CUTE} is obsolete and has been replaced by \emph{CREST}\cite{CuteWebSite} last commit on the \href{https://github.com/jburnim/crest}{official repository of the project} date of 2017. \\
-		\emph{jCUTE} is the first concolic execution engine for \emph{java} \cite{jDart} designed and implemented around 2006. It is no longer maintained, last commit on the \href{https://github.com/osl/jcute}{official repository of the project} date of 2013. 
-	   	
+		\emph{jCUTE} is the first concolic execution engine for \emph{java} \cite{jDart} designed and implemented around 2006. It is no longer maintained, last commit on the \href{https://github.com/osl/jcute}{official repository of the project} date of 2013.
+
 	\subsection{JDART}
 		\emph{JDART} describes itself as a dynamic symbolic analysis framework for \emph{Java} \cite{jDart}.\\
 		The main goal of the tool is to build a dynamic symbolic analysis tool that can be used to industrial scale complex software. Another important aspect was the main design guideline they wish to be modular and extensible.\\
-		
+
 		%TODO [Loan] : Si nécessaire, parler plus en profondeur des features de JDART "As mentioned, the key distinguishing feature of JDart is its modular architecture.The two main components of JDart are the Executor and the Explorer ."
-		
+
 		Looking at the \href{https://github.com/psycopaths/jdart}{repository of the project}, the project started around 2015. But it seems that it stagnates since 2017 based on last commits.
 		% JDART parle de JCUTE dans la section 4 : "Several symbolic execution tools specifically target Java Bytecode programs. A number of them implement dynamic symbolic execution via Java Bytecode instrumentation. JCute [27], the first concolic execution engine for Java, uses Soot [30] for instrumentation, and uses lp_solve as a constraint solver. JCute is no longer maintained."
-		
-		%TODO : relation entre JDART et JPF : "Currently, JDart uses the software model checker Java PathFinder (JPF) for the execution of Java Bytecode programs." Mais on ne parle pas de JPF encore, donc ça ne serai pas pertinant 
+
+		%TODO : relation entre JDART et JPF : "Currently, JDart uses the software model checker Java PathFinder (JPF) for the execution of Java Bytecode programs." Mais on ne parle pas de JPF encore, donc ça ne serai pas pertinant
 
 	\subsection{S$^2$E}
     \label{subsec:S2E}
@@ -214,14 +214,27 @@ and side effects
 
 
     \subsection{EXE}
+      \label{subsec:exe}
       Section~\ref{subsec:state-space-explosion} stated the memory problem. \textbf{EXE} is a tool (focused on C) that aims to reduce that with the use of concolic execution within the states, allowing to partially store the states and using the path condition to recreate the output if needed. The tool bases itself over the principle of \emph{EGT - Execution Generated Testing}~\cite{exe}, which is basically the classic approach to symbolic execution. The tool uses a constraint solver working on the path condition to prune the tested algorithm's branches (simply deleting unsatisfiable constraints, branches that cannot logically exist can be generated due to the symbolic value, this pruning removes them), then to solve the constraint to generate a set of test value. The tool also uses models to check code coverage, which is only optional.
 
       Although good for its time, EXE still suffers from the same problems and a new one; \emph{isolation}. The tool is isolated from the environment and any kind of interaction ruined the double execution of symbolic and concrete data. Interacting with a network, input, ... would result in the loss of the symbolic execution or would require a full model of the world to interact with (which ranges from difficult to impossible). Furthermore, the need for a model for sufficient coverage requires a realistic and complete model. Functions which return the same value for different outputs (\emph{e.g.: in Java, if you compare an object to another}) or worse; different values for the same input, would result in models that would not quite work with the tool. On top of that, the tool works assuming it has a good SAT-solver (and as we know, 3-SAT is np-complete) and available memory.
 
     \subsection{KLEE}
-      This tool~\cite{klee} is a complete rework of EXE, also focused on C, by the same authors three years later (2008). While the basis were the same, KLEE managed to largely improve the execution time and space by keeping its advantages (\emph{exact memory representation}, constraint solving, high code coverage). To reduce the space bottleneck, KLEE stores the states concurrently, sharing them, allowing larger sets of states to be used by the same execution. It is important to note that KLEE does not mindlessly check each instruction. Sets of dangerous operations which can lead to failures rather than wrong outputs are determined. In the C-language context, it means memory accesses and allocation. %ToDo [adrien] : continue this
+      \label{subsec:klee}
+      This tool~\cite{klee} is a complete rework of EXE, also focused on C, by the same authors three years later (2008). While the basis were the same, KLEE managed to largely improve the execution time and space by keeping its advantages (\emph{exact memory representation}, constraint solving, high code coverage). To reduce the space bottleneck, KLEE stores the states concurrently, sharing them, allowing larger sets of states to be used by the same execution. It is important to note that KLEE does not mindlessly check each instruction. Sets of dangerous operations which can lead to failures rather than wrong outputs are determined. In the C-language context, it means memory accesses and allocation. Each time the solver reaches one of those dangerous operations in an algorithm, KLEE tries all the values allowed by the current path condition and returns all the inputs leading to faulty results.
 
+      KLEE is arguably one of the most advanced symbolic execution frameworks up to this day. Its new architecture~\cite{klee}, inherited from the EXE's experience, reduces usage complexity, time and space. To reduce \textbf{memory} usage, KLEE does not use a OS-generated program state as EXE did, but instead maps pages tables to a virtual heap to share memory, similar to a forking process accessing shared memory. It is called \emph{compact internal state representation}, increasing the concurrent state amount without decreasing the memory representation quality. To reduce \textbf{time} (in relation to other symbolic execution tools), KLEE introduces many \emph{sat-solving optimisations}. As satisfiability is a NP-complete problem and KLEE generates many of constraints that have to be solved (either to reduce a path condition form or to find a faulty input from the path condition), we can expect high computation times. The tool is able to reduce this execution time up to 15 faster than without optimisations. We can observe~\emph{klee} :
+      \begin{itemize}
+        \item \emph{Expression simplification}: maintain the most simple path condition everytime a constraint is added to reduce further computation time. For example, if a first branch requires a positive number and a second condition along this path requires an integer between 10 and 20, we can drop the first condition.
+        \item \emph{Implied value concretization}: we have seen that both EXE and KLEE sometimes use concrete value because they are cheaper. If during an execution the condition of a variable is an equation, KLEE solves the equation to store the concrete(s) value(s) of the variable instead of a path condition.
+        \item \emph{Constraint independance}: inherited from EXE, this optimisatin stores the constraints in groups sorted by the accessed variables. Constraints that do not access the same variable have no need to be checked simultaneously because they do not overlap.
+        \item \emph{Counter-exemple cache}: is a cache of queries to eliminate both redundant queries (slightly similar to expression simplification) and unsolvable queries via a map of the constraints. We could therefore eliminate ${x < 0, x > 0}$ as soon as the constraint is introduced.
+      \end{itemize}
+      The tool also speeds execution up with the use of both complex heuristics on the paths and path conditions (they also use random path exploration). As many of the symbolic execution tools, KLEE has been open source since 2009~\footnote{https://github.com/klee/klee} and is still active today. On the negative side, we can note that KLEE does not support multithreaded algorithms, and has trouble with complex memory objects (especially those varying in size and symbolic floating points).
   \section{Conclusions}
+    We hope that this survey has been a good introduction to the world of symbolic execution, both in the general context and the current tools that are still being developed since what we could call a rebirth of the field in 2005, thanks to the big companies previously cited (see History). Due to the limited size, we were not able to extensively look into techniques and complex mechanisms but we hope that we planted a seed of curiosity or interest in the subject. To wrap this survey up, we could insist on the emergence of more and more complex tools that, while still being slowed down by the almighty state-space explosion, gain in power each year. Symbolic Execution, for now, is still a program testing solution that is mainly used in academia or large companies that can afford it. Small and medium companies still prefer unit and integration testing that is easier and cheaper to setup and maintain. But this could change in the future.
+
+    It is also important to note that softwares are not the only ones being symbolically tested. While not discussed here, we can cite usage of symbolic execution in hardware~\cite{Hardware}, networks~\cite{220590}.
     % What can we get from this paper in general
     % Could be pertinent to talk about a kind of "to go further" which could contain adjacent fields of research
     % Could be pertinent to talk about the future of symbolic execution, if there is any new technique being developed, ...
