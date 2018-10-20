@@ -4,8 +4,13 @@
 \usepackage{graphicx}
 \graphicspath{{img/}}
 \usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage[linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
-
+\makeatletter
+\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
+\makeatother
 
 
 \begin{document}
@@ -27,12 +32,93 @@
     \subsection{The concept}
       The idea behind symbolic execution is to test an algorithm with \emph{symbolic values} rather than concrete values. So instead of using unit testing where a variable is set to a (usually random) value, the symbolic execution maintains a formula that contains all the possible values for the code to reach a particular point in the program. This formula is updated every time the program reaches a branching point. In figure~\ref{fig:symbolicsimple}, we show an example from~\cite{visserWillemCorina} of a symbolic execution. Observe how it produces constraints over the variables to explore the algorithm's branching tree.
       \begin{figure}
+%      \subcaptionbox{Pseudo-code swapping 2 variable values and produce some errors}[.18\textwidth]{
+%      	\removelatexerror
+%      	\begin{algorithm}[H]
+%      	 \scriptsize
+%	    	\SetKwFunction{Ffoo}{foo}
+%	    	\SetKwProg{Fn}{Function}{:}{}
+%			    \Fn{\Ffoo{int x, int y}}{
+%		    	\If{x $>$ y} {
+%		    		x = x + y\;
+%		    		y = x - y\;
+%		    		x = x - y\;
+%					\If {x $>$ y} {
+%						ERROR1\;
+%					}
+%					\If {x $>$ 2} {
+%						ERROR2\;
+%					}
+%		    	}
+%		    	\KwRet SUCCESS\;
+%	    	}
+%	
+%		\end{algorithm}
+%      }
+%      	\subcaptionbox{Corresponding symbolic execution tree}[.3\textwidth]{%    
+%      	\tikzset{
+%		  treenode/.style = {shape=rectangle, rounded corners,
+%		                     draw, align=center
+%		                     },
+%		  unfeasible/.style = {treenode},%, bottom color=gray!30},
+%		  error/.style      = {treenode},%, bottom color=red!30},
+%		  sucess/.style     = {treenode},%, bottom color=lime!30},
+%		  basic/.style      = {treenode},%, bottom color=blue!20},
+%		  myLabel/.style = {draw=black, shape=rectangle},
+%		  branchLabel/.style = {draw=none},
+%		}
+%
+%		\begin{tikzpicture}[
+%			scale = 0.6,
+%			sibling distance = 150,
+%			level distance = 55,
+%		  	every node/.style = 
+%		  	{
+%		  		scale = 0.6,
+%		  		shape=rectangle, 
+%			    	draw, align=center,
+%			    	top color=white,
+%		    	}
+%		    ]
+%		\node[basic,label={[myLabel]left:0}] {$x:\lambda_1, y:\lambda_2$\\PC : $\langle \rangle$} 
+%			child {node[basic, label={[myLabel]left:1}] {$x:\lambda_1, y:\lambda_2$\\PC : $\langle \lambda_1 > \lambda_2 \rangle$} 
+%				child {node[basic,label={[myLabel]left:3}] {$x:\lambda_1 + \lambda_2 , y:\lambda_2$\\PC : $\langle \lambda_1 > \lambda_2 \rangle$}
+%				{
+%					child {node[basic, label={[myLabel]left:4}] {$x:\lambda_1 + \lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2 \rangle$} 
+%						child {node [basic, label={[myLabel]left:5}]{$x:\lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2 \rangle$} 
+%							child {node[unfeasible, label={[myLabel]6}] {$x:\lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2, \lambda_2 > \lambda_1 \rangle$\\ FALSE}
+%								edge from parent node[branchLabel] {6}
+%							}
+%							child {node[basic, label={[myLabel]7}] {$x:\lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2, \lambda_2 \leq \lambda_1 \rangle$}
+%								child {node[error, label={[myLabel]8}] {$x:\lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2, \lambda_2 > 2 \rangle$\\ERROR2}
+%									edge from parent node[branchLabel] {8}
+%								}
+%								child {node[sucess, label={[myLabel]9}] {$x:\lambda_2 , y:\lambda_1$\\PC : $\langle \lambda_1 > \lambda_2, \lambda_2 \leq 2 \rangle$\\SUCCESS}
+%										edge from parent node[branchLabel] {8}
+%								}
+%								edge from parent node[branchLabel] {6}
+%							}
+%							edge from parent node[branchLabel] {5}
+%						}
+%						edge from parent node[branchLabel] {4}
+%					}
+%					edge from parent node[branchLabel] {3}
+%				}
+%			}
+%				edge from parent node[branchLabel] {2}
+%			}
+%			child {node[sucess,label={[myLabel]2}] {$x:\lambda_1, y:\lambda_2$\\PC : $\langle \lambda_1 \leq \lambda_2 \rangle$\\SUCCESS}
+%			edge from parent node[branchLabel] {2}
+%			}
+%		;
+%		\end{tikzpicture}
+%		}
+		\centering
         \includegraphics[width=0.5\textwidth]{symbolicsimple}
         \caption{Swapping two integers and its symbolic execution tree}
         \label{fig:symbolicsimple}
       \end{figure}
     % What is symbolic execution and why do we do this survey
-
   \section{History}
     We find the first papers on symbolic execution around 1975~\cite{newapproach}. Early methods proposed simple structures to hold conditions with a SAT-solver, the support of simple data types and were focused on algorithm testing (instead of large programs). While papers continue to grow on the subject, it really is around 2005 that symbolic execution gets wind in its sails with more and more frameworks and tools for software verification. The last ten years have seen more papers on the subject\footnote{Data from Google Scholar} (around 200.000) than the three decades following its introduction (half that much). Among the supporters of the method, we can identify two clear research poles, China~\cite{Hardware, memorytablemodel, CHEN2018118} and the United States of America, with an heavy participation of Microsoft~\cite{bouncer-securing-software-by-blocking-bad-input} which was pooling heavy resources in software and OS reliability, and the NASA~\cite{neurosymbolicexecution, DirectedIncrementalSymExe, visserWillemCorina}.
 
