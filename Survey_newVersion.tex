@@ -207,7 +207,7 @@
       \item \emph{Constraint independance}: inherited from EXE, this optimisatin stores the constraints in groups sorted by the accessed variables. Constraints that do not access the same variable have no need to be checked simultaneously because they do not overlap.
       \item \emph{Counter-exemple cache}: is a cache of queries to eliminate both redundant queries (slightly similar to expression simplification) and unsolvable queries via a map of the constraints. We could therefore eliminate ${x < 0, x > 0}$ as soon as the constraint is introduced.
     \end{itemize}
-    The tool also speeds execution up with the use of both complex heuristics on the paths and path conditions (they also use random path exploration). As many of the symbolic execution tools, KLEE has been open source since 2009~\footnote{https://github.com/klee/klee} and is still active today. On the negative side, we can note that KLEE does not support multithreaded algorithms, and has trouble with complex memory objects (especially those varying in size and symbolic floating points).
+    The tool also speeds execution up with the use of both complex heuristics on the paths and path conditions (they also use random path exploration). As many of the symbolic execution tools, KLEE has been open source since 2009~\cite{KleeGitRepo} and is still active today. On the negative side, we can note that KLEE does not support multithreaded algorithms, and has trouble with complex memory objects (especially those varying in size and symbolic floating points).
 
 	\subsection{S$^2$E}
     \label{subsec:S2E}
