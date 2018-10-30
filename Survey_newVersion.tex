@@ -244,6 +244,7 @@ and side effects.
 
     		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the execution returns again to the concrete domain, the execution tree no longer expands, it may still grow, but it does not add any new paths until the execution goes in the symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.
 
+			%TODO [LOAN] : meilleur exemple, en raccourcissant la section précédente et mieux détailler les transitions dans cet exemple. S'inspirer de la section 2.2 (et la figure 2) du document \cite{chipounov2012s2e}.
 
   \hfill
 
