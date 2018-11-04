@@ -16,13 +16,12 @@
 \begin{document}
 
 % Subject : Symbolic executions technique for finding bugs %
-\title{A Survey of\\Symbolic Executions Techniques} % NB: I removed the "for finding bugs" because "bug" is not well-defined and we can clearly state in the introduction why we use symbolic execution.
+\title{A Survey of\\Symbolic Executions Techniques\\ \normalsize \today} % NB: I removed the "for finding bugs" because "bug" is not well-defined and we can clearly state in the introduction why we use symbolic execution.
 \author{
   \IEEEauthorblockN{Hallet Adrien \\ adrien.hallet@student.uclouvain.be}%
   \and
   \IEEEauthorblockN{Sens Loan \\ loan.sens@student.uclouvain.be}
 }
-\date{\today}
 \maketitle
 
   \section*{Abstract}
@@ -40,7 +39,7 @@
       \end{figure}
     % What is symbolic execution and why do we do this survey
   \section{History}
-    We find the first papers on symbolic execution around 1975~\cite{newapproach}. In 2005, a regain of interest in the subject\footnote{Google Scholar reports more than twice the amount of papers from 2005 to today than thre three preceding decades} revives the worldwide research with two clear poles, China~\cite{Hardware, memorytablemodel, CHEN2018118} and the United States of America, with an heavy participation of Microsoft~\cite{bouncer-securing-software-by-blocking-bad-input} which was pooling heavy resources in software and OS reliability, and the NASA~\cite{neurosymbolicexecution, DirectedIncrementalSymExe, visserWillemCorina}.
+    We find the first papers on symbolic execution around 1975~\cite{newapproach}. In 2005, a regain of interest in the subject\footnote{Google Scholar reports more than twice the amount of papers from 2005 to today than the three preceding decades} revives the worldwide research with two clear poles, China~\cite{Hardware, memorytablemodel, CHEN2018118} and the United States of America, with an heavy participation of Microsoft~\cite{bouncer-securing-software-by-blocking-bad-input} which was pooling heavy resources in software and OS reliability, and the NASA~\cite{neurosymbolicexecution, DirectedIncrementalSymExe, visserWillemCorina}.
 
   \section{Method}
     \subsection{Objective}
@@ -202,7 +201,7 @@
     \subsubsection*{Key strength/originality}
     KLEE is arguably one of the most advanced symbolic execution frameworks up to this day. Its new architecture~\cite{klee}, inherited from the EXE's experience, reduces usage complexity, time and space. To reduce \textbf{memory} usage, KLEE does not use a OS-generated program state as EXE did, but instead maps pages tables to a virtual heap to share memory, similar to a forking process accessing shared memory. It is called \emph{compact internal state representation}, increasing the concurrent state amount without decreasing the memory representation quality. To reduce \textbf{time} (in relation to other symbolic execution tools), KLEE introduces many \emph{sat-solving optimisations}. As satisfiability is a NP-complete problem and KLEE generates many of constraints that have to be solved (either to reduce a path condition form or to find a faulty input from the path condition), we can expect high computation times. The tool is able to reduce this execution time up to 15 faster than without optimisations. We can observe~\emph{klee} :
     \begin{itemize}
-      \item \emph{Expression simplification}: maintain the most simple path condition everytime a constraint is added to reduce further computation time. For example, if a first branch requires a positive number and a second condition along this path requires an integer between 10 and 20, we can drop the first condition.
+      \item \emph{Expression simplification}: maintain the most simple path condition everytime a constraint is added to reduce further computation time.
       \item \emph{Implied value concretization}: we have seen that both EXE and KLEE sometimes use concrete value because they are cheaper. If during an execution the condition of a variable is an equation, KLEE solves the equation to store the concrete(s) value(s) of the variable instead of a path condition.
       \item \emph{Constraint independance}: inherited from EXE, this optimisatin stores the constraints in groups sorted by the accessed variables. Constraints that do not access the same variable have no need to be checked simultaneously because they do not overlap.
       \item \emph{Counter-exemple cache}: is a cache of queries to eliminate both redundant queries (slightly similar to expression simplification) and unsolvable queries via a map of the constraints. We could therefore eliminate ${x < 0, x > 0}$ as soon as the constraint is introduced.
@@ -243,7 +242,7 @@ and side effects.
     		Let us use the figure \ref{fig:selectiveSymbolicExample} as a reference example, it describes an application \emph{app} using a library \emph{lib} on top of an OS \emph{kernel}. We are interested in testing the \emph{lib}, but not the \emph{app} nor the \emph{kernel}. Therefore only the \emph{lib} will be executed symbolically, the 2 others will be concrete.\\
 
     		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the execution returns again to the concrete domain, the execution tree no longer expands, it may still grow, but it does not add any new paths until the execution goes in the symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.\\
-    		
+
     		\begin{algorithm}
 		    	\SetKwFunction{Ffoo}{libFn}
 		    	\SetKwProg{Fn}{Function}{:}{}
@@ -260,7 +259,7 @@ and side effects.
 				\caption{\texttt{libFn} function (partial) code}
 				\label{S2ELibFn}
 		    \end{algorithm}
-		    
+
     		Let us go in further detail on the \emph{libFn} to the \emph{sysFn} transition (symbolic to concrete transition). Let the code of  the \emph{libFn} function be as described in the algorithm \ref{S2ELibFn} and their is no path constraints when the function is called.\\
     		On the first \texttt{if} branch, the path split on the constraint $x < 5$ which is added to the \emph{path constraints}. The \emph{sysFn} function call only happen on the \emph{then} part of the branch, as it is a concrete function we must concretize the value of $x$ according to our current \emph{path constraints} ($\langle x < 5 \rangle$). Thus the tool make the arbitrary choice of 4 for $x$ which is consistent with our \emph{path constraints} to then perform \emph{sysFn(4)}. This concretization added a $x = 4$ constraint into the \emph{path constraints}.\\
     		After the concrete execution of \emph{sysFn} it returns to \emph{libFn} in the symbolic domain. But notice that \emph{sysFn}'s returned value is correct only on the constraint added by the concretisation as all computation was done assuming that $x$ value was $4$.
@@ -268,7 +267,7 @@ and side effects.
   \hfill
 
   \section{Conclusions}
-    We hope that this survey has been a good introduction to the world of symbolic execution, both in the general context and the current tools that are still being developed since what we could call a rebirth of the field in 2005, thanks to the big companies previously cited (see History). It is also important to note that softwares are not the only ones being symbolically tested. While not discussed here, we can cite usage of symbolic execution in hardware~\cite{Hardware} and networks~\cite{220590}. Due to the limited size of this paper, we were not able to extensively look into techniques and complex mechanisms but we hope that we planted a seed of curiosity or interest in the subject. To wrap this survey up, we could insist on the emergence of more and more complex tools that, while still being slowed down by the almighty state-space explosion, gain in power each year. Symbolic Execution, for now, is still a program testing solution that is mainly used in academia or large companies that can afford it. Small and medium companies still prefer unit and integration testing that is easier and cheaper to setup and maintain. But this could change in the future.
+    We hope that this survey has been a good introduction to the world of symbolic execution, both in the general context and the past and current major tools. It is also important to note that softwares are not the only ones being symbolically tested. While not discussed here, we can cite usage of symbolic execution in hardware~\cite{Hardware} and networks~\cite{220590}. Due to the limited size of this paper, we were not able to extensively look into techniques and complex mechanisms but we hope that we planted a seed of curiosity or interest in the subject. To wrap this survey up, we could insist on the emergence of more and more complex tools that, while still being slowed down by the almighty state-space explosion, gain in power each year. Symbolic Execution, for now, is still a program testing solution that is mainly used in academia or large companies that can afford it. Small and medium companies still prefer unit and integration testing that is easier and cheaper to setup and maintain. But this could change in the future.
 
     \hfill % fill the rest of the page
 
