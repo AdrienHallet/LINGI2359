@@ -242,9 +242,28 @@ and side effects.
     	\label{subsec:S2EExample}
     		Let us use the figure \ref{fig:selectiveSymbolicExample} as a reference example, it describes an application \emph{app} using a library \emph{lib} on top of an OS \emph{kernel}. We are interested in testing the \emph{lib}, but not the \emph{app} nor the \emph{kernel}. Therefore only the \emph{lib} will be executed symbolically, the 2 others will be concrete.\\
 
-    		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the execution returns again to the concrete domain, the execution tree no longer expands, it may still grow, but it does not add any new paths until the execution goes in the symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.
+    		\emph{app} call the function \emph{appFn} which itself calls a \emph{lib} function \emph{libFn}, which eventually invokes a system call \emph{sysFn}. After that \emph{sysFn} returns, \emph{libFn} does some extra execution and then eventually returns to \emph{appFn}. Once the execution crosses into the symbolic domain (gray shaded part) from the concrete domain (white part), the execution tree expands. After the execution returns again to the concrete domain, the execution tree no longer expands, it may still grow, but it does not add any new paths until the execution goes in the symbolic domain again. A path may terminate prematurely, for example in case of hitting a crash bug.\\
+    		
+    		\begin{algorithm}
+		    	\SetKwFunction{Ffoo}{libFn}
+		    	\SetKwProg{Fn}{Function}{:}{}
 
-			%TODO [LOAN] : meilleur exemple, en raccourcissant la section précédente et mieux détailler les transitions dans cet exemple. S'inspirer de la section 2.2 (et la figure 2) du document \cite{chipounov2012s2e}.
+		    	\Fn{\Ffoo{int x}}{
+			    	\If{x $<$ 5} {
+						buf = sysFn(x)\;
+						\If{x $<$ 0} {
+							...
+						}
+			    	}
+		    	}
+
+				\caption{\texttt{libFn} function (partial) code}
+				\label{S2ELibFn}
+		    \end{algorithm}
+		    
+    		Let us go in further detail on the \emph{libFn} to the \emph{sysFn} transition (symbolic to concrete transition). Let the code of  the \emph{libFn} function be as described in the algorithm \ref{S2ELibFn} and their is no path constraints when the function is called.\\
+    		On the first \texttt{if} branch, the path split on the constraint $x < 5$ which is added to the \emph{path constraints}. The \emph{sysFn} function call only happen on the \emph{then} part of the branch, as it is a concrete function we must concretize the value of $x$ according to our current \emph{path constraints} ($\langle x < 5 \rangle$). Thus the tool make the arbitrary choice of 4 for $x$ which is consistent with our \emph{path constraints} to then perform \emph{sysFn(4)}. This concretization added a $x = 4$ constraint into the \emph{path constraints}.\\
+    		After the concrete execution of \emph{sysFn} it returns to \emph{libFn} in the symbolic domain. But notice that \emph{sysFn}'s returned value is correct only on the constraint added by the concretisation as all computation was done assuming that $x$ value was $4$.
 
   \hfill
 
